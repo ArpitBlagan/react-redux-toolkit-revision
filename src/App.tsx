@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { useCreateItemMutation, useGetItemsQuery } from "./redux/slices/api";
+import { decrement, increment } from "./redux/slices/counter";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const state = useAppSelector((s) => s.counter);
+  const dispatch = useAppDispatch();
+  const [createItem] = useCreateItemMutation();
+  const { data, error, isLoading } = useGetItemsQuery();
+  if (error) {
+    return <div>Error</div>;
+  }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>Hello from Arpit Blagan.</h1>
+      <h4>Counter state: {state}</h4>
+      <h4>Post length: {data.length}</h4>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(increment());
+        }}
+      >
+        Increase count
+      </button>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(decrement());
+        }}
+      >
+        Decrease count
+      </button>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          createItem({ cool: "okok" });
+        }}
+      >
+        Create a new item
+      </button>
+    </div>
+  );
 }
 
-export default App
+export default App;
